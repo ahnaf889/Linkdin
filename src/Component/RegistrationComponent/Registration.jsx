@@ -70,10 +70,14 @@ const Registration = () => {
           console.log(userinfo.user.metadata.creationTime);
         })
         .then(() => {
-          successToast("Your Registration is done");
+          //react toastity Success implement
+          successToast("Your Registration Is Done");
         })
         .catch((error) => {
-          console.log(error.message);
+          //react toastity Error implement
+          const errormessage = error.message.split("/")[1];
+          console.log(errormessage);
+          errorToast(errormessage.slice(0, errormessage.length - 2));
         })
         .finally(() => {
           setemail("");
@@ -121,7 +125,7 @@ const Registration = () => {
                   value={email}
                   onChange={handelEmail}
                   className="text-[18px] placeholder:text-auth_opasiti_color w-full placeholder:text-[16px] p-4"
-                  placeholder="Enter your email"
+                  placeholder="Enter your email/gmail"
                 />
               </fieldset>
               <span className="text-red-700 font-Nunito text-[17px] font-medium">
@@ -140,7 +144,7 @@ const Registration = () => {
                   value={fullname}
                   onChange={handelFullname}
                   className="text-[18px] placeholder:text-auth_opasiti_color w-full placeholder:text-[16px] p-4"
-                  placeholder="Enter your name"
+                  placeholder="Enter your full name"
                 />
               </fieldset>
               <span className="text-red-700 font-Nunito text-[17px] font-medium">
