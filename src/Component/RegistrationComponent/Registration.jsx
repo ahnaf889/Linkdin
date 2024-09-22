@@ -1,9 +1,15 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaLinkedin } from "react-icons/fa6";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  onAuthStateChanged,
+  updateProfile,
+} from "firebase/auth";
 import BeatLoader from "react-spinners/SyncLoader.js";
 import {
   emailpattenpass,
@@ -15,6 +21,7 @@ import { successToast, errorToast, infoToast } from "../../../Utils/Toast.js";
 const Registration = () => {
   //firebase connection
   const auth = getAuth();
+
   // State for input
   const [email, setemail] = useState("");
   const [fullname, setfullname] = useState("");
@@ -36,17 +43,23 @@ const Registration = () => {
 
   // State for valueS
   const handelEmail = (event) => {
-    console.log(event.target.value);
     setemail(event.target.value);
   };
+
   const handelFullname = (event) => {
-    console.log(event.target.value);
     setfullname(event.target.value);
   };
+
   const handelPassword = (event) => {
-    console.log(event.target.value);
     setpassword(event.target.value);
   };
+
+  //useEffect user disply name implement
+  useEffect(() => {
+    onAuthStateChanged(auth, (userinfo) => {
+      console.log(userinfo.displayName);
+    });
+  });
 
   //State for Submmit
   const handelSubmit = () => {
@@ -67,16 +80,21 @@ const Registration = () => {
       // Create user with email and password
       createUserWithEmailAndPassword(auth, email, password)
         .then((userinfo) => {
-          console.log(userinfo.user.metadata.creationTime);
+          successToast("Your Registration Is Done");
         })
         .then(() => {
-          //react toastity Success implement
-          successToast("Your Registration Is Done");
+          sendEmailVerification(auth.currentUser).then(() => {
+            successToast("Pleace check your email");
+          });
+        })
+        .then(() => {
+          updateProfile(auth.currentUser, {
+            displayName: fullname,
+          });
         })
         .catch((error) => {
           //react toastity Error implement
-          const errormessage = error.message.split("/")[1];
-          console.log(errormessage);
+          let errormessage = error.message.split("/")[1];
           errorToast(errormessage.slice(0, errormessage.length - 2));
         })
         .finally(() => {
@@ -87,6 +105,7 @@ const Registration = () => {
           setfullnameerror("");
           setpassworderror("");
           setloader(false);
+          eyeOpen(true);
         });
     }
   };
