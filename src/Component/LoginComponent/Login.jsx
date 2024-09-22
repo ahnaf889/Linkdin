@@ -5,8 +5,19 @@ import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 const Login = () => {
   //eyeopen stata implemnent
   const [EyeOpen, setEyeOpen] = useState(true);
-  const handeleye = () => {
-    setEyeOpen(!EyeOpen);
+
+  //handelInput stata implemnent
+  const [userInfo, setuserInfo] = useState({
+    email: "",
+    password: "",
+  });
+
+  //handelInput stata implemnent
+  const handelInput = (event) => {
+    setuserInfo({
+      ...userInfo,
+      [event.target.id]: event.target.value,
+    });
   };
 
   return (
@@ -39,6 +50,8 @@ const Login = () => {
               <input
                 type="text"
                 name="email"
+                id="email"
+                onChange={handelInput}
                 className="text-[18px] placeholder:text-auth_opasiti_color w-full placeholder:text-[16px] p-4"
                 placeholder="Enter your email/gmail"
               />
@@ -53,11 +66,15 @@ const Login = () => {
               <div className="flex items-center">
                 <input
                   type={EyeOpen ? "password" : "text"}
+                  onChange={handelInput}
                   name="password"
+                  id="password"
                   className="text-[18px] placeholder:text-auth_opasiti_color w-full placeholder:text-[40px] p-4"
                   placeholder="......."
                 />
-                <span className="pr-5 cursor-pointer" onClick={handeleye}>
+                <span
+                  className="pr-5 cursor-pointer"
+                  onClick={() => setEyeOpen(!EyeOpen)}>
                   {EyeOpen ? <FaEyeSlash /> : <FaRegEye />}
                 </span>
               </div>

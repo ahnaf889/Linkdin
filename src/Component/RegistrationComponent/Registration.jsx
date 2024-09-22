@@ -10,6 +10,7 @@ import {
   onAuthStateChanged,
   updateProfile,
 } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 import BeatLoader from "react-spinners/SyncLoader.js";
 import {
   emailpattenpass,
@@ -17,10 +18,12 @@ import {
   passwordpattenpass,
 } from "../../../Utils/Validate.js";
 import { successToast, errorToast, infoToast } from "../../../Utils/Toast.js";
+import { getTimeNow } from "../../../Utils/Moment/Moment.js";
 
 const Registration = () => {
   //firebase connection
   const auth = getAuth();
+  const db = getDatabase();
 
   // State for input
   const [email, setemail] = useState("");
@@ -76,6 +79,7 @@ const Registration = () => {
       setfullnameerror("");
       setpassworderror("");
       setloader(true);
+      seteyeOpen(true);
 
       // Create user with email and password
       createUserWithEmailAndPassword(auth, email, password)
@@ -90,6 +94,15 @@ const Registration = () => {
         .then(() => {
           updateProfile(auth.currentUser, {
             displayName: fullname,
+          });
+        })
+        .then(() => {
+          const usersInfo = ref(db, "users/");
+          set(usersInfo, {
+            uid: auth.currentUser.uid,
+            userName: fullname,
+            userEmail: auth.currentUser.uid,
+            Created: getTimeNow(),
           });
         })
         .catch((error) => {
