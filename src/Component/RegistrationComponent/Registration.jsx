@@ -10,7 +10,7 @@ import {
   onAuthStateChanged,
   updateProfile,
 } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, push } from "firebase/database";
 import BeatLoader from "react-spinners/SyncLoader.js";
 import {
   emailpattenpass,
@@ -19,11 +19,13 @@ import {
 } from "../../../Utils/Validate.js";
 import { successToast, errorToast, infoToast } from "../../../Utils/Toast.js";
 import { getTimeNow } from "../../../Utils/Moment/Moment.js";
+import { useNavigate, Link } from "react-router-dom";
 
 const Registration = () => {
   //firebase connection
   const auth = getAuth();
   const db = getDatabase();
+  const navigate = useNavigate();
 
   // State for input
   const [email, setemail] = useState("");
@@ -84,11 +86,11 @@ const Registration = () => {
       // Create user with email and password
       createUserWithEmailAndPassword(auth, email, password)
         .then((userinfo) => {
-          successToast("Your Registration Is Done");
+          successToast("Your Registration Is Done", "top-left");
         })
         .then(() => {
           sendEmailVerification(auth.currentUser).then(() => {
-            successToast("Pleace check your email");
+            successToast("Pleace check your email", "top-left");
           });
         })
         .then(() => {
@@ -98,17 +100,24 @@ const Registration = () => {
         })
         .then(() => {
           const usersInfo = ref(db, "users/");
-          set(usersInfo, {
+          set(push(usersInfo), {
             uid: auth.currentUser.uid,
             userName: fullname,
-            userEmail: auth.currentUser.uid,
+            userEmail: auth.currentUser.email,
             Created: getTimeNow(),
-          });
+          })
+            .then(() => {
+              navigate("/login");
+            })
+            .catch((Error) => {
+              console.Error;
+            });
         })
         .catch((error) => {
           //react toastity Error implement
-          let errormessage = error.message.split("/")[1];
-          errorToast(errormessage.slice(0, errormessage.length - 2));
+          // const errormessage = error.message.split("/")[1];
+          // errorToast(errormessage.slice(0, errormessage.length - 2));
+          errorToast(error.code, "top-right");
         })
         .finally(() => {
           setemail("");
@@ -222,6 +231,12 @@ const Registration = () => {
                 "Sign Up"
               )}
             </button>
+            <p className="font-nunito text-center cursor-pointer -mt-5 text-[18px]">
+              Already have an account?
+              <Link to={"/login"}>
+                <span className="text-red-600 font-semibold"> Sign Up</span>
+              </Link>
+            </p>
           </div>
         </div>
       </div>

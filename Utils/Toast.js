@@ -6,9 +6,9 @@ import { toast, Bounce } from "react-toastify";
  * todo: SuccessToast funtion implement
  * @param {*} message
  */
-export const successToast = (message) => {
+export const successToast = (message, position = "top-left") => {
   toast.success(message, {
-    position: "top-left",
+    position,
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -24,9 +24,9 @@ export const successToast = (message) => {
  * todo: Errortoast funtion implement
  * @param {*} message
  */
-export const errorToast = (message) => {
+export const errorToast = (message, position = "top-right") => {
   toast.error(message, {
-    position: "top-right",
+    position,
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -42,9 +42,9 @@ export const errorToast = (message) => {
  * todo: InfoToast funtion implement
  * @param {*} message
  */
-export const infoToast = (message) => {
+export const infoToast = (message, position = "top-right") => {
   toast.info(message, {
-    position: "top-right",
+    position,
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
