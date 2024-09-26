@@ -1,18 +1,29 @@
 import React, { useState } from "react";
-import { FaLinkedin } from "react-icons/fa6";
-import { FaEyeSlash, FaRegEye } from "react-icons/fa";
+import { FaEyeSlash, FaRegEye, FaGoogle } from "react-icons/fa";
 import {
   emailpattenpass,
   passwordpattenpass,
 } from "../../../Utils/Validate.js";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { getDatabase, ref, set, push } from "firebase/database";
 import { useNavigate, Link } from "react-router-dom";
 import { successToast, errorToast } from "../../../Utils/Toast.js";
 import BeatLoader from "react-spinners/SyncLoader.js";
+import { getTimeNow } from "../../../Utils/Moment/Moment.js";
 
 const Login = () => {
+  /**
+   * todo: firebase auth funtion emplement
+   * @param({})
+   */
   const auth = getAuth();
   const navigate = useNavigate();
+  const db = getDatabase();
 
   const [EyeOpen, setEyeOpen] = useState(true);
   const [loader, setloader] = useState(false);
@@ -78,18 +89,46 @@ const Login = () => {
     }
   };
 
+  /**
+   * todo: handelGoogleLogin funtion emplement
+   * @param({})
+   */
+  const handelGoogleLogin = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        console.log(user);
+      })
+      .then(() => {
+        const usersInfo = ref(db, "users/");
+        set(push(usersInfo), {
+          uid: auth.currentUser.uid,
+          userName: auth.currentUser.displayName,
+          userEmail: auth.currentUser.email,
+          Created: getTimeNow(),
+        });
+      })
+      .then(() => {
+        successToast("Your Google Login Is Done");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        errorToast(errorCode);
+      });
+  };
+
   return (
     <div className="justify-center h-screen">
       <div className="flex justify-center items-center h-full">
         <div className="flex flex-col gap-y-10 w-[497px]">
           <div>
-            <span className="flex justify-center text-[50px]">
-              <a
-                href="https://www.linkedin.com/"
-                target="_"
-                className="text-auth_blue_color pb-[32px]">
-                <FaLinkedin />
-              </a>
+            <span
+              className="flex justify-center text-[42px] pb-5 cursor-pointer text-blue-600"
+              onClick={handelGoogleLogin}>
+              <FaGoogle />
             </span>
             <h3 className="font-Nunito text-[32.4px] text-center font-semibold pb-3 text-auth_font_color">
               Login
