@@ -1,25 +1,25 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import { FaLinkedin } from "react-icons/fa6";
-import { FaEyeSlash, FaRegEye } from "react-icons/fa";
+import React, {useEffect, useState} from 'react';
+import {FaLinkedin} from 'react-icons/fa6';
+import {FaEyeSlash, FaRegEye} from 'react-icons/fa';
 import {
   getAuth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
   onAuthStateChanged,
   updateProfile,
-} from "firebase/auth";
-import { getDatabase, ref, set, push } from "firebase/database";
-import BeatLoader from "react-spinners/SyncLoader.js";
+} from 'firebase/auth';
+import {getDatabase, ref, set, push} from 'firebase/database';
+import BeatLoader from 'react-spinners/SyncLoader.js';
 import {
   emailpattenpass,
   Fullnamepattenpass,
   passwordpattenpass,
-} from "../../../Utils/Validate.js";
-import { successToast, errorToast, infoToast } from "../../../Utils/Toast.js";
-import { getTimeNow } from "../../../Utils/Moment/Moment.js";
-import { useNavigate, Link } from "react-router-dom";
+} from '../../../Utils/Validate.js';
+import {successToast, errorToast, infoToast} from '../../../Utils/Toast.js';
+import {getTimeNow} from '../../../Utils/Moment/Moment.js';
+import {useNavigate, Link} from 'react-router-dom';
 
 const Registration = () => {
   //firebase connection
@@ -28,14 +28,14 @@ const Registration = () => {
   const navigate = useNavigate();
 
   // State for input
-  const [email, setemail] = useState("");
-  const [fullname, setfullname] = useState("");
-  const [password, setpassword] = useState("");
+  const [email, setemail] = useState('');
+  const [fullname, setfullname] = useState('');
+  const [password, setpassword] = useState('');
 
   // State for errors
-  const [emailerror, setemailerror] = useState("");
-  const [fullnameerror, setfullnameerror] = useState("");
-  const [passworderror, setpassworderror] = useState("");
+  const [emailerror, setemailerror] = useState('');
+  const [fullnameerror, setfullnameerror] = useState('');
+  const [passworderror, setpassworderror] = useState('');
 
   // State for spnner
   const [loader, setloader] = useState(false);
@@ -69,28 +69,28 @@ const Registration = () => {
   //State for Submmit
   const handelSubmit = () => {
     if (!email || !emailpattenpass(email)) {
-      setemailerror("Your email is undifind....?");
+      setemailerror('Your email is undifind....?');
     } else if (!fullname || !Fullnamepattenpass(fullname)) {
-      setemailerror("");
-      setfullnameerror("Pleace type your full name....?");
+      setemailerror('');
+      setfullnameerror('Pleace type your full name....?');
     } else if (!password || !passwordpattenpass(password)) {
-      setfullnameerror("");
-      setpassworderror("Your password is wrong....?");
+      setfullnameerror('');
+      setpassworderror('Your password is wrong....?');
     } else {
-      setemailerror("");
-      setfullnameerror("");
-      setpassworderror("");
+      setemailerror('');
+      setfullnameerror('');
+      setpassworderror('');
       setloader(true);
       seteyeOpen(true);
 
       // Create user with email and password
       createUserWithEmailAndPassword(auth, email, password)
         .then((userinfo) => {
-          successToast("Your Registration Is Done", "top-left");
+          successToast('Your Registration Is Done', 'top-left');
         })
         .then(() => {
           sendEmailVerification(auth.currentUser).then(() => {
-            successToast("Pleace check your email", "top-left");
+            successToast('Pleace check your email', 'top-left');
           });
         })
         .then(() => {
@@ -99,7 +99,7 @@ const Registration = () => {
           });
         })
         .then(() => {
-          const usersInfo = ref(db, "users/");
+          const usersInfo = ref(db, 'users/');
           set(push(usersInfo), {
             uid: auth.currentUser.uid,
             userName: fullname,
@@ -107,7 +107,7 @@ const Registration = () => {
             Created: getTimeNow(),
           })
             .then(() => {
-              navigate("/login");
+              navigate('/login');
             })
             .catch((Error) => {
               console.Error;
@@ -117,15 +117,15 @@ const Registration = () => {
           //react toastity Error implement
           // const errormessage = error.message.split("/")[1];
           // errorToast(errormessage.slice(0, errormessage.length - 2));
-          errorToast(error.code, "top-right");
+          errorToast(error.code, 'top-right');
         })
         .finally(() => {
-          setemail("");
-          setfullname("");
-          setpassword("");
-          setemailerror("");
-          setfullnameerror("");
-          setpassworderror("");
+          setemail('');
+          setfullname('');
+          setpassword('');
+          setemailerror('');
+          setfullnameerror('');
+          setpassworderror('');
           setloader(false);
           eyeOpen(true);
         });
@@ -143,7 +143,8 @@ const Registration = () => {
                 <a
                   href="https://www.linkedin.com/"
                   target="_"
-                  className=" text-auth_blue_color pb-[42px]">
+                  className=" text-auth_blue_color pb-[42px]"
+                >
                   <FaLinkedin />
                 </a>
               </span>
@@ -200,14 +201,17 @@ const Registration = () => {
                 </legend>
                 <div className="flex items-center">
                   <input
-                    type={eyeOpen ? "password" : "text"}
+                    type={eyeOpen ? 'password' : 'text'}
                     name="password"
                     value={password}
                     onChange={handelPassword}
                     className="text-[18px] placeholder:text-auth_opasiti_color w-full placeholder:text-[40px] p-4"
                     placeholder="......."
                   />
-                  <span className="pr-5 cursor-pointer" onClick={handeleye}>
+                  <span
+                    className="pr-5 cursor-pointer"
+                    onClick={handeleye}
+                  >
                     {eyeOpen ? <FaEyeSlash /> : <FaRegEye />}
                   </span>
                 </div>
@@ -218,7 +222,8 @@ const Registration = () => {
             </div>
             <button
               className="w-full py-[15px] rounded-[86px] leading-10 bg-auth_blue_color font-nunito text-[20.64px] text-white font-normal"
-              onClick={handelSubmit}>
+              onClick={handelSubmit}
+            >
               {loader ? (
                 <BeatLoader
                   color="#FF0000"
@@ -228,12 +233,12 @@ const Registration = () => {
                   data-testid="loader"
                 />
               ) : (
-                "Sign Up"
+                'Sign Up'
               )}
             </button>
             <p className="font-nunito text-center cursor-pointer -mt-5 text-[18px]">
               Already have an account?
-              <Link to={"/login"}>
+              <Link to={'/login'}>
                 <span className="text-red-600 font-semibold"> Sign Up</span>
               </Link>
             </p>

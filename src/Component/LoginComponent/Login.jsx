@@ -1,20 +1,17 @@
-import React, { useState } from "react";
-import { FaEyeSlash, FaRegEye, FaGoogle } from "react-icons/fa";
-import {
-  emailpattenpass,
-  passwordpattenpass,
-} from "../../../Utils/Validate.js";
+import React, {useState} from 'react';
+import {FaEyeSlash, FaRegEye, FaGoogle} from 'react-icons/fa';
+import {emailpattenpass, passwordpattenpass} from '../../../Utils/Validate.js';
 import {
   getAuth,
-  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
-} from "firebase/auth";
-import { getDatabase, ref, set, push } from "firebase/database";
-import { useNavigate, Link } from "react-router-dom";
-import { successToast, errorToast } from "../../../Utils/Toast.js";
-import BeatLoader from "react-spinners/SyncLoader.js";
-import { getTimeNow } from "../../../Utils/Moment/Moment.js";
+} from 'firebase/auth';
+import {getDatabase, ref, set, push} from 'firebase/database';
+import {useNavigate, Link} from 'react-router-dom';
+import {successToast, errorToast} from '../../../Utils/Toast.js';
+import BeatLoader from 'react-spinners/SyncLoader.js';
+import {getTimeNow} from '../../../Utils/Moment/Moment.js';
 
 const Login = () => {
   /**
@@ -29,8 +26,8 @@ const Login = () => {
   const [loader, setloader] = useState(false);
 
   const [loginInfo, setLoginInfo] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
 
   const handleLoginInput = (event) => {
@@ -41,50 +38,51 @@ const Login = () => {
   };
 
   const [loginError, setloginError] = useState({
-    emailError: "",
-    passwordError: "",
+    emailError: '',
+    passwordError: '',
   });
 
   // Clear error messages when user starts typing
   const handleSignUp = () => {
-    const { email, password } = loginInfo;
+    const {email, password} = loginInfo;
     if (!email || !emailpattenpass(email)) {
       setloginError({
         ...loginError,
-        emailError: "Your email is wrong",
+        emailError: 'Your email is wrong',
       });
     } else if (!password || !passwordpattenpass(password)) {
       setloginError({
         ...loginError,
-        emailError: "",
-        passwordError: "Your password is wrong",
+        emailError: '',
+        passwordError: 'Your password is wrong',
       });
     } else {
       setloader(true);
       setloginError({
         ...loginError,
-        emailError: "",
-        passwordError: "",
+        emailError: '',
+        passwordError: '',
       });
       setloginError({
         ...loginError,
-        emailError: "",
-        passwordError: "",
+        emailError: '',
+        passwordError: '',
       });
-      createUserWithEmailAndPassword(auth, email, password)
+      signInWithEmailAndPassword(auth, email, password)
         .then((userInfo) => {
-          successToast("Pleace check your email", "top-left");
+          successToast('Pleace check your email', 'top-left');
         })
         .catch((error) => {
-          errorToast(error.code, "top-right");
+          errorToast(error.code, 'top-right');
         })
         .finally(() => {
           setLoginInfo({
             ...loginInfo,
-            email: "",
-            password: "",
+            email: '',
+            password: '',
           });
           setloader(false);
+          setEyeOpen(true);
         });
     }
   };
@@ -103,7 +101,7 @@ const Login = () => {
         console.log(user);
       })
       .then(() => {
-        const usersInfo = ref(db, "users/");
+        const usersInfo = ref(db, 'users/');
         set(push(usersInfo), {
           uid: auth.currentUser.uid,
           userName: auth.currentUser.displayName,
@@ -112,7 +110,7 @@ const Login = () => {
         });
       })
       .then(() => {
-        successToast("Your Google Login Is Done");
+        successToast('Your Google Login Is Done');
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -127,7 +125,8 @@ const Login = () => {
           <div>
             <span
               className="flex justify-center text-[42px] pb-5 cursor-pointer text-blue-600"
-              onClick={handelGoogleLogin}>
+              onClick={handelGoogleLogin}
+            >
               <FaGoogle />
             </span>
             <h3 className="font-Nunito text-[32.4px] text-center font-semibold pb-3 text-auth_font_color">
@@ -163,7 +162,7 @@ const Login = () => {
               </legend>
               <div className="flex items-center">
                 <input
-                  type={EyeOpen ? "password" : "text"}
+                  type={EyeOpen ? 'password' : 'text'}
                   name="password"
                   id="password"
                   value={loginInfo.password}
@@ -173,7 +172,8 @@ const Login = () => {
                 />
                 <span
                   className="pr-5 cursor-pointer"
-                  onClick={() => setEyeOpen(!EyeOpen)}>
+                  onClick={() => setEyeOpen(!EyeOpen)}
+                >
                   {EyeOpen ? <FaEyeSlash /> : <FaRegEye />}
                 </span>
               </div>
@@ -184,7 +184,8 @@ const Login = () => {
           </div>
           <button
             className="w-full py-[15px] rounded-[86px] leading-10 bg-auth_blue_color font-nunito text-[20.64px] text-white font-normal"
-            onClick={handleSignUp}>
+            onClick={handleSignUp}
+          >
             {loader ? (
               <BeatLoader
                 color="#FF0000"
@@ -194,12 +195,12 @@ const Login = () => {
                 data-testid="loader"
               />
             ) : (
-              "Sign In"
+              'Sign In'
             )}
           </button>
           <p className="font-nunito text-center cursor-pointer -mt-5 text-[18px]">
             Already have an account?
-            <Link to={"/registration"}>
+            <Link to={'/registration'}>
               <span className="text-red-600 font-semibold"> Sign In</span>
             </Link>
           </p>
